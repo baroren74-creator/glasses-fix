@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Repair Assistant (Mobile Friendly)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 30px;
+      background: #111;
+      color: white;
+    }
+    .card {
+      background: #1e1e1e;
+      padding: 20px;
+      border-radius: 15px;
+      margin-top: 50px;
+    }
+    button {
+      margin-top: 20px;
+      padding: 15px 25px;
+      font-size: 18px;
+      border: none;
+      border-radius: 10px;
+      background: #4CAF50;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🔧 Repair Assistant</h1>
+
+  <div class="card">
+    <h2 id="step"></h2>
+    <button id="next-btn">הבא</button>
+  </div>
+
+  <script>
+    const steps = [
+      { text: "פתח את 7 הברגים מאחור", detail: "" },
+      { text: "הסר את הכיסוי האחורי בזהירות", detail: "יש חוטים בפנים – להיזהר שלא לנתק אותם" },
+      { text: "נקה בעדינות את בסיס הג׳ויסטיק", detail: "השתמש במקלון עם אלכוהול איזופרופיל בתנועות סיבוביות; לא להציף בנוזל" },
+      { text: "ייבש את הסטיקים עם מייבש שיער", detail: "" },
+      { text: "הרכב את השלט מחדש", detail: "החזר את הכיסוי וחזק את כל הברגים בסדר הפוך לסדר הפירוק" }
+    ];
+    let current = 0;
+    function render() {
+      const step = steps[current];
+      const total = steps.length;
+      const number = current + 1;
+      document.getElementById("step").innerHTML = `${number}/${total}: ${step.text}<br><small>${step.detail}</small>`;
+    }
+    function nextStep() {
+      if (current < steps.length - 1) {
+        current++;
+        render();
+      }
+    }
+    document.getElementById("next-btn").addEventListener("click", nextStep);
+    render();
+  </script>
+</body>
+</html>
