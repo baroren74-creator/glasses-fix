@@ -3,93 +3,82 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>מדריך תיקון – בחירת מוצר</title>
+  <title>מרכז מדריכים – בחירת מוצר</title>
   <style>
     body {
       margin: 0;
       font-family: Arial, sans-serif;
       background-color: #111;
       color: white;
+      padding: 20px;
+    }
+    h1 { text-align: center; }
+    .menu {
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 20px;
+      gap: 20px;
     }
-    h1 { margin-bottom: 10px; }
-    select {
+    .card {
       background-color: #1e1e1e;
-      color: white;
-      border: 1px solid #444;
-      padding: 8px 12px;
-      border-radius: 6px;
-      font-size: 1rem;
-    }
-    #guide {
-      margin-top: 20px;
-      max-width: 600px;
-      width: 100%;
-      background: #1e1e1e;
-      border-radius: 12px;
       padding: 20px;
+      border-radius: 10px;
+      width: 90%;
+      max-width: 600px;
       box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+      cursor: pointer;
+      transition: transform 0.2s, background-color 0.2s;
     }
-    #step-image {
-      width: 100%;
-      border-radius: 8px;
-      margin-bottom: 15px;
-      background-color: #333;
-      object-fit: contain;
+    .card:hover {
+      transform: translateY(-3px);
+      background-color: #2a2a2a;
     }
-    #step-text {
-      font-size: 1rem;
-      line-height: 1.5;
-      margin-bottom: 20px;
-    }
-    #navigation {
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-    }
+    .card h2 { margin: 0 0 10px 0; }
+    .card p { margin: 0; color: #ccc; }
+    /* מדריך */
+    #guide-view { display: none; max-width: 600px; margin: 0 auto; }
+    #step-counter { margin-bottom: 15px; font-weight: bold; }
+    #step-image { width: 100%; border-radius: 8px; background: #333; margin-bottom: 15px; }
+    #step-text { white-space: pre-line; margin-bottom: 20px; }
+    #nav-buttons { display: flex; justify-content: space-between; }
     button {
-      padding: 10px 18px;
-      font-size: 1rem;
-      border: none;
-      border-radius: 8px;
       background-color: #4CAF50;
       color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 18px;
+      font-size: 1rem;
       cursor: pointer;
     }
-    button:disabled {
-      background-color: #777;
-      cursor: default;
-    }
-    #step-counter {
-      margin-bottom: 15px;
-      font-size: 1.2rem;
-      font-weight: bold;
-    }
+    button:disabled { background-color: #777; cursor: default; }
   </style>
 </head>
 <body>
-  <h1>בחירת מדריך תיקון</h1>
-  <label for="guide-select">בחר מדריך:</label>
-  <select id="guide-select">
-    <option value="xbox">בקר Xbox – Drift בג׳ויסטיק</option>
-    <option value="trackpad">Magic Trackpad Teardown (ארבעת השלבים הראשונים)</option>
-  </select>
+  <h1>מרכז מדריכים</h1>
+  <div id="menu-view" class="menu">
+    <div class="card" onclick="selectGuide('xbox')">
+      <h2>תיקון Drift בג׳ויסטיק – Xbox 360</h2>
+      <p>החלפת ג'ויסטיק תקול בבקר ה-Xbox 360 בשל Drift.</p>
+    </div>
+    <div class="card" onclick="selectGuide('trackpad')">
+      <h2>Magic Trackpad Teardown</h2>
+      <p>פירוק מלא (ארבעת השלבים הראשונים) של משטח המגע הקסום של Apple.</p>
+    </div>
+  </div>
 
-  <div id="guide">
+  <div id="guide-view">
+    <button onclick="backToMenu()">⬅ חזרה לתפריט</button>
     <div id="step-counter"></div>
     <img id="step-image" src="" alt="תמונת שלב">
     <div id="step-text"></div>
-    <div id="navigation">
-      <button id="prev-btn">הקודם</button>
-      <button id="next-btn">הבא</button>
+    <div id="nav-buttons">
+      <button id="prev-btn" onclick="prevStep()">הקודם</button>
+      <button id="next-btn" onclick="nextStep()">הבא</button>
     </div>
   </div>
 
   <script>
-    // מדריכים זמינים והשלבים שלהם
+    // נתוני מדריכים
     const guides = {
       xbox: [
         { text: "פתח את 7 הברגים מאחור בעזרת מברג Torx T8.", image: "https://guide-images.cdn.ifixit.com/igi/PA5GCyolHvMEen1j.standard" },
@@ -106,53 +95,67 @@
       ]
     };
 
-    let currentGuide = 'xbox';
-    let currentStep = 0;
+    let currentGuide = null;
+    let currentStepIndex = 0;
 
-    const guideSelect = document.getElementById('guide-select');
+    const menuView = document.getElementById('menu-view');
+    const guideView = document.getElementById('guide-view');
     const stepCounterEl = document.getElementById('step-counter');
     const stepImageEl = document.getElementById('step-image');
     const stepTextEl = document.getElementById('step-text');
     const prevBtn = document.getElementById('prev-btn');
     const nextBtn = document.getElementById('next-btn');
 
-    function loadGuide(name) {
+    function selectGuide(name) {
       currentGuide = name;
-      currentStep = 0;
+      currentStepIndex = 0;
+      menuView.style.display = 'none';
+      guideView.style.display = 'block';
       renderStep();
     }
 
-    guideSelect.addEventListener('change', (e) => {
-      loadGuide(e.target.value);
-    });
+    function backToMenu() {
+      guideView.style.display = 'none';
+      menuView.style.display = 'flex';
+      currentGuide = null;
+    }
 
     function renderStep() {
       const steps = guides[currentGuide];
-      const step = steps[currentStep];
-      stepCounterEl.textContent = `${currentStep + 1} / ${steps.length}`;
+      const step = steps[currentStepIndex];
+      stepCounterEl.textContent = `${currentStepIndex + 1} / ${steps.length}`;
       stepImageEl.src = step.image;
       stepTextEl.textContent = step.text;
-      prevBtn.disabled = currentStep === 0;
-      nextBtn.disabled = currentStep === steps.length - 1;
+      prevBtn.disabled = currentStepIndex === 0;
+      nextBtn.disabled = currentStepIndex === steps.length - 1;
+      speak(step.text);
     }
 
-    prevBtn.addEventListener('click', () => {
-      const steps = guides[currentGuide];
-      if (currentStep > 0) {
-        currentStep--;
+    function prevStep() {
+      if (currentStepIndex > 0) {
+        currentStepIndex--;
         renderStep();
       }
-    });
-    nextBtn.addEventListener('click', () => {
-      const steps = guides[currentGuide];
-      if (currentStep < steps.length - 1) {
-        currentStep++;
-        renderStep();
-      }
-    });
+    }
 
-    // התחלה
-    renderStep();
+    function nextStep() {
+      const steps = guides[currentGuide];
+      if (currentStepIndex < steps.length - 1) {
+        currentStepIndex++;
+        renderStep();
+      }
+    }
+
+    // פונקציה להקראת הטקסט
+    function speak(text) {
+      if (!('speechSynthesis' in window)) return; // אין תמיכה
+      // ביטול הקראה קודמת אם עדיין רצה
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'he-IL';
+      // ב-iOS יש צורך באינטראקציה - ההקראה תיעשה לאחר לחיצה על כפתור או בחירה במדריך
+      window.speechSynthesis.speak(utterance);
+    }
   </script>
 </body>
 </html>
