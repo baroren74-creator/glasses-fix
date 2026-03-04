@@ -3,149 +3,132 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>מדריך תיקון – בקר Xbox 360 ומדריכים נוספים</title>
+  <title>Magic Trackpad Teardown – מדריך אינטראקטיבי</title>
   <style>
+    /* סגנון בסיסי לעמוד */
     body {
-      font-family: Arial, sans-serif;
-      background: #111;
-      color: #f2f2f2;
-      text-align: center;
       margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background-color: #111;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
       padding: 20px;
     }
-    .card {
-      background: #1e1e1e;
-      padding: 20px;
-      border-radius: 15px;
-      margin: 0 auto;
+    h1 {
+      margin-bottom: 10px;
+    }
+    #guide {
       max-width: 600px;
-    }
-    #image-container {
-      margin-bottom: 15px;
+      width: 100%;
+      background-color: #1e1e1e;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+      padding: 20px;
     }
     #step-image {
-      max-width: 100%;
-      border-radius: 10px;
-      display: none;
+      width: 100%;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      object-fit: contain;
+      background-color: #333;
+    }
+    #step-text {
+      font-size: 1rem;
+      line-height: 1.5;
+      margin-bottom: 20px;
+    }
+    #navigation {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
     }
     button {
-      margin-top: 20px;
-      padding: 12px 20px;
-      font-size: 18px;
+      padding: 10px 18px;
+      font-size: 1rem;
       border: none;
-      border-radius: 10px;
-      background: #4CAF50;
+      border-radius: 8px;
+      background-color: #4CAF50;
       color: white;
       cursor: pointer;
     }
     button:disabled {
-      background: #555;
+      background-color: #777;
       cursor: default;
     }
-    /* List styling for the additional guides */
-    .guides-list {
-      list-style: none;
-      padding: 0;
-    }
-    .guides-list li {
-      margin: 8px 0;
-      background: #1e1e1e;
-      border-radius: 10px;
-      padding: 10px;
-    }
-    .guides-list a {
-      color: #4CAF50;
-      text-decoration: none;
+    #step-counter {
+      margin-bottom: 15px;
+      font-size: 1.2rem;
+      font-weight: bold;
     }
   </style>
 </head>
 <body>
-  <h1>🔧 מדריך לתיקון דריפט בג׳ויסטיק – Xbox 360</h1>
-  <div class="card">
-    <div id="image-container">
-      <img id="step-image" src="" alt="" />
+  <h1>🛠️ פירוק Magic Trackpad</h1>
+  <div id="guide">
+    <div id="step-counter"></div>
+    <img id="step-image" src="" alt="תמונת שלב">
+    <div id="step-text"></div>
+    <div id="navigation">
+      <button id="prev-btn">הקודם</button>
+      <button id="next-btn">הבא</button>
     </div>
-    <h3 id="step-counter"></h3>
-    <p id="step-text"></p>
-    <button id="next-btn" onclick="nextStep()">הבא</button>
   </div>
 
   <script>
-    // צעדים עם טקסט וקישורי תמונות מתוך מדריך iFixit לתיקון דריפט בבקר Xbox 360
+    // מערך השלבים: כל אובייקט מכיל טקסט ותמונת שער
     const steps = [
       {
-        text: "פתח את 7 הברגים מאחור באמצעות מברג Torx T8",
-        images: [
-          "https://guide-images.cdn.ifixit.com/igi/iEFeA4HCuZSCRKOs.standard"
-        ]
+        text: `ה-Magic Trackpad הוא משטח המגע השולחני הראשון המציע סט מלא של מחוות: לחיצה, גלילה, החלקה וסיבוב – הכל בקצות האצבעות.\n\nדרישות:\n• מחשב מק מסוג שולחני או נייד\n• חיבור Bluetooth\n• macOS‏ 10.6.4 או חדש יותר\n• וכמובן, סוללות! (מטען סוללות של אפל אינו כלול)\n\nעל פי השמועות, ה-Magic Trackpad הוא דגם A1339.`,
+        image: "https://guide-images.cdn.ifixit.com/igi/OKmGSYS4qHZ1h1NL.standard"
       },
       {
-        text: "הסר את הכיסוי האחורי בזהירות (יש חוטים בפנים שיכולים להתנתק).",
-        images: [
-          "https://guide-images.cdn.ifixit.com/igi/U2GVouFUYRkVnmKR.standard"
-        ]
+        text: `ה-Magic Trackpad גדול ב-80% מהמשטח שבמחשבי MacBook Pro נוכחיים.\nהוא מעוצב מאלומיניום ממש כמו המקלדת האלחוטית, כדי לאפשר שילוב מושלם של הקלדה ומחוות.\nמשטח הזכוכית בעל עובי של 0.5 מ"מ ומצופה להגנה מפני בלאי.\nמה יש בפנים? בואו נגלה!`,
+        image: "https://guide-images.cdn.ifixit.com/igi/YImFsxtyZH5jNLCo.standard"
       },
       {
-        text: "נקה בעדינות את בסיס הג׳ויסטיק באמצעות מקלון צמר גפן עם אלכוהול איזופרופיל או רפואי; אל תשים יותר מדי נוזל כדי לא להזיק לשלט.",
-        images: [
-          "https://guide-images.cdn.ifixit.com/igi/JFFAbNkKa3NRrGxH.standard"
-        ]
+        text: `שלב זה עוסק בהוצאת הסוללות. סובבו את פתח הסוללות ופשוט הוציאו את שתי סוללות AA.\nשימו לב לחוט הברגה המרובע – סוג הברגה יעיל במיוחד מבחינה מכנית, אך קשה לייצור ולכן נדיר. שאפו, אפל, על תשומת הלב לפרטים!`,
+        image: "https://guide-images.cdn.ifixit.com/igi/haRDIhncK3oj51ac.standard"
       },
       {
-        text: "ייבש את שני הסטיקים באמצעות מייבש שיער.",
-        images: [
-          "https://guide-images.cdn.ifixit.com/igi/Q262sXwmYGZ1EG3w.standard"
-        ]
-      },
-      {
-        text: "הרכב מחדש את השלט על‑ידי החזרת הכיסוי והברגים בסדר הפוך.",
-        images: []
+        text: `הגיע הזמן להתחיל בפירוק! השתמשו בכלי פלסטי לפתיחת מכשירים כדי להפריד את הפאנל התחתון מהדבק סביב צידו השמאלי, הימני והעליון.\n⚠️ אל תפרקו לאורך הקצה התחתון – קיימים שם תפסים שמחזיקים את המכסה.\nלאחר חיתוך רוב הדבק, הפאנל התחתון יוסר בקלות.`,
+        image: "https://guide-images.cdn.ifixit.com/igi/KA2CBSt1Pf1CfAfO.standard"
       }
     ];
 
-    let current = 0;
+    let currentStep = 0;
 
-    function render() {
-      const step = steps[current];
-      document.getElementById('step-counter').innerText = `${current + 1} / ${steps.length}`;
-      document.getElementById('step-text').innerText = step.text;
-      const imgEl = document.getElementById('step-image');
-      if (step.images && step.images.length > 0) {
-        imgEl.src = step.images[0];
-        imgEl.style.display = 'block';
-      } else {
-        imgEl.style.display = 'none';
-      }
-      // Enable or disable button on last step
-      document.getElementById('next-btn').disabled = current >= steps.length - 1;
+    const stepCounterEl = document.getElementById('step-counter');
+    const stepImageEl = document.getElementById('step-image');
+    const stepTextEl = document.getElementById('step-text');
+    const prevBtn = document.getElementById('prev-btn');
+    const nextBtn = document.getElementById('next-btn');
+
+    function renderStep() {
+      const step = steps[currentStep];
+      stepCounterEl.textContent = `${currentStep + 1} / ${steps.length}`;
+      stepImageEl.src = step.image;
+      stepTextEl.textContent = step.text;
+      prevBtn.disabled = currentStep === 0;
+      nextBtn.disabled = currentStep === steps.length - 1;
     }
 
-    function nextStep() {
-      if (current < steps.length - 1) {
-        current++;
-        render();
+    prevBtn.addEventListener('click', () => {
+      if (currentStep > 0) {
+        currentStep--;
+        renderStep();
       }
-    }
+    });
+    nextBtn.addEventListener('click', () => {
+      if (currentStep < steps.length - 1) {
+        currentStep++;
+        renderStep();
+      }
+    });
 
-    // Initialize display
-    render();
+    // הצגה ראשונית
+    renderStep();
   </script>
-
-  <h2 style="margin-top: 40px;">📚 מדריכים נוספים לדוגמה</h2>
-  <p>להלן רשימה של עוד עשרה מדריכי תיקון מאתר iFixit (להדגמה בלבד):</p>
-  <ul class="guides-list">
-    <li><a href="https://www.ifixit.com/Guide/PowerBook+G3+Wallstreet+Hard+Drive+Replacement/4" target="_blank">PowerBook G3 Wallstreet Hard Drive Replacement – דרגת קושי: Moderate</a></li>
-    <li><a href="https://www.ifixit.com/Guide/PowerBook+G3+Wallstreet+Processor+Replacement/5" target="_blank">PowerBook G3 Wallstreet Processor Replacement – דרגת קושי: Easy</a></li>
-    <li><a href="https://www.ifixit.com/Guide/PowerBook+G3+Wallstreet+RAM+Replacement/6" target="_blank">PowerBook G3 Wallstreet RAM Replacement – דרגת קושי: Moderate</a></li>
-    <li><a href="https://www.ifixit.com/Guide/PowerBook+G3+Wallstreet+Modem+Replacement/7" target="_blank">PowerBook G3 Wallstreet Modem Replacement – דרגת קושי: Easy</a></li>
-    <li><a href="https://www.ifixit.com/Guide/PowerBook+G3+Wallstreet+Clutch+Cover+Replacement/8" target="_blank">PowerBook G3 Wallstreet Clutch Cover Replacement – דרגת קושי: Easy</a></li>
-    <li><a href="https://www.ifixit.com/Guide/PowerBook+G3+Wallstreet+Display+Replacement/9" target="_blank">PowerBook G3 Wallstreet Display Replacement – דרגת קושי: Moderate</a></li>
-    <li><a href="https://www.ifixit.com/Guide/PowerBook+G3+Wallstreet+Upper+Case+Replacement/10" target="_blank">PowerBook G3 Wallstreet Upper Case Replacement – דרגת קושי: Difficult</a></li>
-    <li><a href="https://www.ifixit.com/Guide/PowerBook+G3+Wallstreet+PRAM+Battery+Replacement/11" target="_blank">PowerBook G3 Wallstreet PRAM Battery Replacement – דרגת קושי: Difficult</a></li>
-    <li><a href="https://www.ifixit.com/Guide/PowerBook+G3+Wallstreet+PMU+Replacement/12" target="_blank">PowerBook G3 Wallstreet PMU Replacement – דרגת קושי: Difficult</a></li>
-    <li><a href="https://www.ifixit.com/Guide/PowerBook+G3+Wallstreet+Power+Card+Replacement/13" target="_blank">PowerBook G3 Wallstreet Power Card Replacement – דרגת קושי: Difficult</a></li>
-  </ul>
-
-  <p style="font-size: 14px; color: #888;">שימו לב: מדריכים אלו ניתנים ברישיון CC BY‑NC‑SA; השתמשו בהם רק לצרכים לא‑מסחריים ותנו קרדיט לאתר iFixit.</p>
 </body>
 </html>
