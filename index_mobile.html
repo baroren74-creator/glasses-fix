@@ -1,93 +1,116 @@
 <!DOCTYPE html>
-<html>
+<html lang="he">
 <head>
-  <title>Repair Assistant with Voice Control</title>
+  <meta charset="UTF-8">
+  <title>Repair Assistant with Camera</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
+      margin: 0;
       font-family: Arial, sans-serif;
+      background: #000;
+      color: #fff;
+    }
+    #videoContainer {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      overflow: hidden;
+    }
+    video {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 0;
+    }
+    #overlay {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      padding: 20px 10px;
+      box-sizing: border-box;
+      background: rgba(0, 0, 0, 0.6);
+      z-index: 1;
       text-align: center;
-      padding: 30px;
-      background: #111;
-      color: white;
     }
-    .card {
-      background: #1e1e1e;
-      padding: 20px;
-      border-radius: 15px;
-      margin-top: 50px;
-    }
-    button {
-      margin-top: 20px;
-      padding: 15px 25px;
+    #stepText {
       font-size: 18px;
+      margin-bottom: 10px;
+    }
+    #nextBtn {
+      padding: 12px 24px;
+      font-size: 16px;
       border: none;
-      border-radius: 10px;
+      border-radius: 6px;
       background: #4CAF50;
-      color: white;
+      color: #fff;
+      cursor: pointer;
+    }
+    #nextBtn:disabled {
+      background: #777;
+      cursor: default;
     }
   </style>
 </head>
 <body>
 
-  <h1>🔧 Repair Assistant</h1>
-
-  <div class="card">
-    <h2 id="step"></h2>
-    <button id="next-btn">הבא</button>
-    <p style="margin-top: 15px; font-size: 14px; color: #aaa;">אפשר להגיד "הבא" כדי לעבור לשלב הבא</p>
+<div id="videoContainer">
+  <video id="video" autoplay playsinline></video>
+  <div id="overlay">
+    <div id="stepText"></div>
+    <button id="nextBtn">הבא</button>
   </div>
+</div>
 
-  <script>
-    const steps = [
-      "פתח את 7 הברגים מאחור",
-      "הסר את הכיסוי האחורי בזהירות (שים לב לחוטים שלא יינתקו)",
-      "נקה בעדינות את בסיס הג׳ויסטיק באמצעות מקלון עם אלכוהול — לא להציף בנוזל",
-      "ייבש את הסטיקים עם מייבש שיער"
-    ];
+<script>
+  // Array of steps from the Xbox controller drift repair guide
+  const steps = [
+    "פתח את 7 הברגים מאחור",
+    "הסר את הכיסוי האחורי בזהירות (שים לב לחוטים שלא יינתקו)",
+    "נקה בעדינות את בסיס הג׳ויסטיק באמצעות מקלון עם אלכוהול — לא להציף בנוזל",
+    "ייבש את הסטיקים עם מייבש שיער",
+    "הרכב את השלט מחדש – החזר את הכיסוי וחזק את כל הברגים בסדר הפוך לסדר הפירוק"
+  ];
 
-    let current = 0;
+  let current = 0;
 
-    function render() {
-      document.getElementById("step").innerText = steps[current];
-      speak(steps[current]);
+  function renderStep() {
+    const stepEl = document.getElementById('stepText');
+    stepEl.innerText = `${current + 1}/${steps.length}  ${steps[current]}`;
+    // Disable button at last step
+    const nextBtn = document.getElementById('nextBtn');
+    nextBtn.disabled = (current >= steps.length - 1);
+  }
+
+  document.getElementById('nextBtn').addEventListener('click', () => {
+    if (current < steps.length - 1) {
+      current++;
+      renderStep();
     }
+  });
 
-    function nextStep() {
-      if (current < steps.length - 1) {
-        current++;
-        render();
-      }
-    }
-
-    function speak(text) {
-      const msg = new SpeechSynthesisUtterance(text);
-      msg.lang = "he-IL";
-      speechSynthesis.speak(msg);
-    }
-
-    document.getElementById("next-btn").addEventListener("click", nextStep);
-
-    // Voice recognition setup (works in Chrome-based browsers)
+  async function startCamera() {
     try {
-      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-      const recognition = new SpeechRecognition();
-      recognition.continuous = true;
-      recognition.lang = "he-IL";
-      recognition.onresult = function(event) {
-        const text = event.results[event.results.length - 1][0].transcript.trim();
-        if (text.includes("הבא") || text.toLowerCase().includes("next")) {
-          nextStep();
-        }
-      };
-      recognition.start();
-    } catch (e) {
-      console.warn('Voice recognition not supported:', e);
+      // Request the rear camera (if available)
+      const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: 'environment' } }, audio: false });
+      const video = document.getElementById('video');
+      video.srcObject = stream;
+    } catch (error) {
+      // Show alert if camera cannot be accessed
+      alert('לא ניתן לגשת למצלמה. ודא שהרשאות המצלמה הופעלו בדפדפן ובמכשיר.');
+      console.error('Camera error:', error);
     }
+  }
 
-    // Start with the first step
-    render();
-  </script>
+  // Start camera when page loads
+  startCamera();
+  // Render the first step
+  renderStep();
+</script>
 
 </body>
 </html>
