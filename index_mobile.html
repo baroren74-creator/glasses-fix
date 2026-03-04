@@ -3,36 +3,42 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Magic Trackpad Teardown – מדריך אינטראקטיבי</title>
+  <title>מדריך תיקון – בחירת מוצר</title>
   <style>
-    /* סגנון בסיסי לעמוד */
     body {
       margin: 0;
-      font-family: Arial, Helvetica, sans-serif;
+      font-family: Arial, sans-serif;
       background-color: #111;
-      color: #fff;
+      color: white;
       display: flex;
       flex-direction: column;
       align-items: center;
       padding: 20px;
     }
-    h1 {
-      margin-bottom: 10px;
+    h1 { margin-bottom: 10px; }
+    select {
+      background-color: #1e1e1e;
+      color: white;
+      border: 1px solid #444;
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 1rem;
     }
     #guide {
+      margin-top: 20px;
       max-width: 600px;
       width: 100%;
-      background-color: #1e1e1e;
+      background: #1e1e1e;
       border-radius: 12px;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.3);
       padding: 20px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.3);
     }
     #step-image {
       width: 100%;
       border-radius: 8px;
       margin-bottom: 15px;
-      object-fit: contain;
       background-color: #333;
+      object-fit: contain;
     }
     #step-text {
       font-size: 1rem;
@@ -65,7 +71,13 @@
   </style>
 </head>
 <body>
-  <h1>🛠️ פירוק Magic Trackpad</h1>
+  <h1>בחירת מדריך תיקון</h1>
+  <label for="guide-select">בחר מדריך:</label>
+  <select id="guide-select">
+    <option value="xbox">בקר Xbox – Drift בג׳ויסטיק</option>
+    <option value="trackpad">Magic Trackpad Teardown (ארבעת השלבים הראשונים)</option>
+  </select>
+
   <div id="guide">
     <div id="step-counter"></div>
     <img id="step-image" src="" alt="תמונת שלב">
@@ -77,35 +89,45 @@
   </div>
 
   <script>
-    // מערך השלבים: כל אובייקט מכיל טקסט ותמונת שער
-    const steps = [
-      {
-        text: `ה-Magic Trackpad הוא משטח המגע השולחני הראשון המציע סט מלא של מחוות: לחיצה, גלילה, החלקה וסיבוב – הכל בקצות האצבעות.\n\nדרישות:\n• מחשב מק מסוג שולחני או נייד\n• חיבור Bluetooth\n• macOS‏ 10.6.4 או חדש יותר\n• וכמובן, סוללות! (מטען סוללות של אפל אינו כלול)\n\nעל פי השמועות, ה-Magic Trackpad הוא דגם A1339.`,
-        image: "https://guide-images.cdn.ifixit.com/igi/OKmGSYS4qHZ1h1NL.standard"
-      },
-      {
-        text: `ה-Magic Trackpad גדול ב-80% מהמשטח שבמחשבי MacBook Pro נוכחיים.\nהוא מעוצב מאלומיניום ממש כמו המקלדת האלחוטית, כדי לאפשר שילוב מושלם של הקלדה ומחוות.\nמשטח הזכוכית בעל עובי של 0.5 מ"מ ומצופה להגנה מפני בלאי.\nמה יש בפנים? בואו נגלה!`,
-        image: "https://guide-images.cdn.ifixit.com/igi/YImFsxtyZH5jNLCo.standard"
-      },
-      {
-        text: `שלב זה עוסק בהוצאת הסוללות. סובבו את פתח הסוללות ופשוט הוציאו את שתי סוללות AA.\nשימו לב לחוט הברגה המרובע – סוג הברגה יעיל במיוחד מבחינה מכנית, אך קשה לייצור ולכן נדיר. שאפו, אפל, על תשומת הלב לפרטים!`,
-        image: "https://guide-images.cdn.ifixit.com/igi/haRDIhncK3oj51ac.standard"
-      },
-      {
-        text: `הגיע הזמן להתחיל בפירוק! השתמשו בכלי פלסטי לפתיחת מכשירים כדי להפריד את הפאנל התחתון מהדבק סביב צידו השמאלי, הימני והעליון.\n⚠️ אל תפרקו לאורך הקצה התחתון – קיימים שם תפסים שמחזיקים את המכסה.\nלאחר חיתוך רוב הדבק, הפאנל התחתון יוסר בקלות.`,
-        image: "https://guide-images.cdn.ifixit.com/igi/KA2CBSt1Pf1CfAfO.standard"
-      }
-    ];
+    // מדריכים זמינים והשלבים שלהם
+    const guides = {
+      xbox: [
+        { text: "פתח את 7 הברגים מאחור בעזרת מברג Torx T8.", image: "https://guide-images.cdn.ifixit.com/igi/PA5GCyolHvMEen1j.standard" },
+        { text: "הסר בעדינות את הכיסוי האחורי. שים לב לחוטים מחוברים שלא יתנתקו.", image: "https://guide-images.cdn.ifixit.com/igi/bpuIiB59HcQQrpMs.standard" },
+        { text: "נקה את בסיס הג׳ויסטיק באמצעות מקלון אוזניים עם מעט אלכוהול איזופרופיל או רפואי. הימנע מהצפת נוזל.", image: "https://guide-images.cdn.ifixit.com/igi/GYFT3n86PfTkzN6u.standard" },
+        { text: "ייבש את הסטיקים עם מייבש שיער כדי למנוע נזק מנוזלים.", image: "https://guide-images.cdn.ifixit.com/igi/M3uYYwRvzzjJVlBP.standard" },
+        { text: "הרכב את השלט מחדש – החזר את הכיסוי וחזק את כל הברגים בסדר הפוך לפירוק.", image: "https://guide-images.cdn.ifixit.com/igi/L4SBRcKfqwKEoA9R.standard" }
+      ],
+      trackpad: [
+        { text: `ה-Magic Trackpad הוא משטח המגע השולחני הראשון המציע סט מלא של מחוות: לחיצה, גלילה, החלקה וסיבוב – הכל בקצות האצבעות.\n\nדרישות:\n• מחשב מק מסוג שולחני או נייד\n• חיבור Bluetooth\n• macOS 10.6.4 או חדש יותר\n• וכמובן, סוללות! (מטען סוללות של אפל אינו כלול)\n\nעל פי השמועות, ה-Magic Trackpad הוא דגם A1339.`, image: "https://guide-images.cdn.ifixit.com/igi/OKmGSYS4qHZ1h1NL.standard" },
+        { text: `ה-Magic Trackpad גדול ב-80% מהמשטח שבמחשבי MacBook Pro נוכחיים.\nהוא מעוצב מאלומיניום ממש כמו המקלדת האלחוטית, כדי לאפשר שילוב מושלם של הקלדה ומחוות.\nמשטח הזכוכית בעל עובי של 0.5 מ"מ ומצופה להגנה מפני בלאי.\nמה יש בפנים? בואו נגלה!`, image: "https://guide-images.cdn.ifixit.com/igi/YImFsxtyZH5jNLCo.standard" },
+        { text: `שלב זה עוסק בהוצאת הסוללות. סובבו את פתח הסוללות ופשוט הוציאו את שתי סוללות AA.\nשימו לב לחוט הברגה המרובע – סוג הברגה יעיל במיוחד מבחינה מכנית, אך קשה לייצור ולכן נדיר. שאפו, אפל, על תשומת הלב לפרטים!`, image: "https://guide-images.cdn.ifixit.com/igi/haRDIhncK3oj51ac.standard" },
+        { text: `הגיע הזמן להתחיל בפירוק! השתמשו בכלי פלסטי לפתיחת מכשירים כדי להפריד את הפאנל התחתון מהדבק סביב צידו השמאלי, הימני והעליון.\n⚠️ אל תפרקו לאורך הקצה התחתון – קיימים שם תפסים שמחזיקים את המכסה.\nלאחר חיתוך רוב הדבק, הפאנל התחתון יוסר בקלות.`, image: "https://guide-images.cdn.ifixit.com/igi/KA2CBSt1Pf1CfAfO.standard" }
+      ]
+    };
 
+    let currentGuide = 'xbox';
     let currentStep = 0;
 
+    const guideSelect = document.getElementById('guide-select');
     const stepCounterEl = document.getElementById('step-counter');
     const stepImageEl = document.getElementById('step-image');
     const stepTextEl = document.getElementById('step-text');
     const prevBtn = document.getElementById('prev-btn');
     const nextBtn = document.getElementById('next-btn');
 
+    function loadGuide(name) {
+      currentGuide = name;
+      currentStep = 0;
+      renderStep();
+    }
+
+    guideSelect.addEventListener('change', (e) => {
+      loadGuide(e.target.value);
+    });
+
     function renderStep() {
+      const steps = guides[currentGuide];
       const step = steps[currentStep];
       stepCounterEl.textContent = `${currentStep + 1} / ${steps.length}`;
       stepImageEl.src = step.image;
@@ -115,19 +137,21 @@
     }
 
     prevBtn.addEventListener('click', () => {
+      const steps = guides[currentGuide];
       if (currentStep > 0) {
         currentStep--;
         renderStep();
       }
     });
     nextBtn.addEventListener('click', () => {
+      const steps = guides[currentGuide];
       if (currentStep < steps.length - 1) {
         currentStep++;
         renderStep();
       }
     });
 
-    // הצגה ראשונית
+    // התחלה
     renderStep();
   </script>
 </body>
