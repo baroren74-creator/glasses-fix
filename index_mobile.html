@@ -2,160 +2,318 @@
 <html lang="he">
 <head>
   <meta charset="UTF-8">
+  <title>מרכז מדריכים</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>מרכז מדריכים – בחירת מוצר</title>
   <style>
     body {
-      margin: 0;
       font-family: Arial, sans-serif;
-      background-color: #111;
-      color: white;
+      margin: 0;
       padding: 20px;
+      background: #0e0e0e;
+      color: #f5f5f5;
+      direction: rtl;
     }
-    h1 { text-align: center; }
-    .menu {
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    /* Home (menu) section styles */
+    #home-section {
+      display: block;
+    }
+    #search-box {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    #search-box input {
+      width: 80%;
+      padding: 10px;
+      border-radius: 6px;
+      border: none;
+      font-size: 16px;
+    }
+    #guide-list {
       display: flex;
-      flex-direction: column;
-      align-items: center;
+      flex-wrap: wrap;
+      justify-content: center;
       gap: 20px;
     }
-    .card {
-      background-color: #1e1e1e;
-      padding: 20px;
+    .guide-card {
+      background: #1f1f1f;
       border-radius: 10px;
-      width: 90%;
+      padding: 15px;
+      width: 280px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .guide-card:hover {
+      background: #2a2a2a;
+    }
+    .guide-card h3 {
+      margin-top: 0;
+      margin-bottom: 10px;
+      font-size: 20px;
+    }
+    .guide-card p {
+      margin: 0;
+      font-size: 14px;
+      color: #ccc;
+    }
+    /* Guide (step) section styles */
+    #guide-section {
+      display: none;
+    }
+    #guide-title {
+      text-align: center;
+      margin-bottom: 10px;
+    }
+    #step-container {
+      background: #1f1f1f;
+      border-radius: 10px;
+      padding: 20px;
       max-width: 600px;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-      cursor: pointer;
-      transition: transform 0.2s, background-color 0.2s;
+      margin: 0 auto;
+      text-align: center;
     }
-    .card:hover {
-      transform: translateY(-3px);
-      background-color: #2a2a2a;
+    #step-counter {
+      margin-bottom: 10px;
+      font-weight: bold;
     }
-    .card h2 { margin: 0 0 10px 0; }
-    .card p { margin: 0; color: #ccc; }
-    /* מדריך */
-    #guide-view { display: none; max-width: 600px; margin: 0 auto; }
-    #step-counter { margin-bottom: 15px; font-weight: bold; }
-    #step-image { width: 100%; border-radius: 8px; background: #333; margin-bottom: 15px; }
-    #step-text { white-space: pre-line; margin-bottom: 20px; }
-    #nav-buttons { display: flex; justify-content: space-between; }
-    button {
-      background-color: #4CAF50;
-      color: white;
+    #step-image {
+      max-width: 100%;
+      border-radius: 6px;
+      margin-bottom: 10px;
+    }
+    #step-text {
+      font-size: 16px;
+      line-height: 1.5;
+      margin-bottom: 20px;
+    }
+    #navigation-buttons {
+      display: flex;
+      justify-content: space-between;
+    }
+    #navigation-buttons button {
+      padding: 10px 20px;
+      font-size: 16px;
+      border-radius: 6px;
       border: none;
-      border-radius: 8px;
-      padding: 10px 18px;
-      font-size: 1rem;
+      background: #4CAF50;
+      color: white;
       cursor: pointer;
+      transition: background 0.3s;
     }
-    button:disabled { background-color: #777; cursor: default; }
+    #navigation-buttons button:disabled {
+      background: #555;
+      cursor: default;
+    }
+    #back-button {
+      margin-top: 20px;
+      padding: 8px 16px;
+      font-size: 14px;
+      border-radius: 6px;
+      border: none;
+      background: #007BFF;
+      color: white;
+      cursor: pointer;
+      display: inline-block;
+    }
   </style>
 </head>
 <body>
-  <h1>מרכז מדריכים</h1>
-  <div id="menu-view" class="menu">
-    <div class="card" onclick="selectGuide('xbox')">
-      <h2>תיקון Drift בג׳ויסטיק – Xbox 360</h2>
-      <p>החלפת ג'ויסטיק תקול בבקר ה-Xbox 360 בשל Drift.</p>
+  <div id="home-section">
+    <h1>מרכז מדריכים</h1>
+    <div id="search-box">
+      <input type="text" id="search-input" placeholder="חפש מדריך...">
     </div>
-    <div class="card" onclick="selectGuide('trackpad')">
-      <h2>Magic Trackpad Teardown</h2>
-      <p>פירוק מלא (ארבעת השלבים הראשונים) של משטח המגע הקסום של Apple.</p>
+    <div id="guide-list">
+      <!-- Guide cards will be injected here -->
     </div>
   </div>
-
-  <div id="guide-view">
-    <button onclick="backToMenu()">⬅ חזרה לתפריט</button>
-    <div id="step-counter"></div>
-    <img id="step-image" src="" alt="תמונת שלב">
-    <div id="step-text"></div>
-    <div id="nav-buttons">
-      <button id="prev-btn" onclick="prevStep()">הקודם</button>
-      <button id="next-btn" onclick="nextStep()">הבא</button>
+  <div id="guide-section">
+    <h2 id="guide-title"></h2>
+    <div id="step-container">
+      <div id="step-counter"></div>
+      <img id="step-image" src="" alt="">
+      <div id="step-text"></div>
+      <div id="navigation-buttons">
+        <button id="prev-btn">הקודם</button>
+        <button id="next-btn">הבא</button>
+      </div>
     </div>
+    <button id="back-button">⬅ חזרה לתפריט</button>
   </div>
-
   <script>
-    // נתוני מדריכים
+    // Data for guides and their steps. Each step has text and an image URL.
     const guides = {
-      xbox: [
-        { text: "פתח את 7 הברגים מאחור בעזרת מברג Torx T8.", image: "https://guide-images.cdn.ifixit.com/igi/PA5GCyolHvMEen1j.standard" },
-        { text: "הסר בעדינות את הכיסוי האחורי. שים לב לחוטים מחוברים שלא יתנתקו.", image: "https://guide-images.cdn.ifixit.com/igi/bpuIiB59HcQQrpMs.standard" },
-        { text: "נקה את בסיס הג׳ויסטיק באמצעות מקלון אוזניים עם מעט אלכוהול איזופרופיל או רפואי. הימנע מהצפת נוזל.", image: "https://guide-images.cdn.ifixit.com/igi/GYFT3n86PfTkzN6u.standard" },
-        { text: "ייבש את הסטיקים עם מייבש שיער כדי למנוע נזק מנוזלים.", image: "https://guide-images.cdn.ifixit.com/igi/M3uYYwRvzzjJVlBP.standard" },
-        { text: "הרכב את השלט מחדש – החזר את הכיסוי וחזק את כל הברגים בסדר הפוך לפירוק.", image: "https://guide-images.cdn.ifixit.com/igi/L4SBRcKfqwKEoA9R.standard" }
-      ],
-      trackpad: [
-        { text: `ה-Magic Trackpad הוא משטח המגע השולחני הראשון המציע סט מלא של מחוות: לחיצה, גלילה, החלקה וסיבוב – הכל בקצות האצבעות.\n\nדרישות:\n• מחשב מק מסוג שולחני או נייד\n• חיבור Bluetooth\n• macOS 10.6.4 או חדש יותר\n• וכמובן, סוללות! (מטען סוללות של אפל אינו כלול)\n\nעל פי השמועות, ה-Magic Trackpad הוא דגם A1339.`, image: "https://guide-images.cdn.ifixit.com/igi/OKmGSYS4qHZ1h1NL.standard" },
-        { text: `ה-Magic Trackpad גדול ב-80% מהמשטח שבמחשבי MacBook Pro נוכחיים.\nהוא מעוצב מאלומיניום ממש כמו המקלדת האלחוטית, כדי לאפשר שילוב מושלם של הקלדה ומחוות.\nמשטח הזכוכית בעל עובי של 0.5 מ"מ ומצופה להגנה מפני בלאי.\nמה יש בפנים? בואו נגלה!`, image: "https://guide-images.cdn.ifixit.com/igi/YImFsxtyZH5jNLCo.standard" },
-        { text: `שלב זה עוסק בהוצאת הסוללות. סובבו את פתח הסוללות ופשוט הוציאו את שתי סוללות AA.\nשימו לב לחוט הברגה המרובע – סוג הברגה יעיל במיוחד מבחינה מכנית, אך קשה לייצור ולכן נדיר. שאפו, אפל, על תשומת הלב לפרטים!`, image: "https://guide-images.cdn.ifixit.com/igi/haRDIhncK3oj51ac.standard" },
-        { text: `הגיע הזמן להתחיל בפירוק! השתמשו בכלי פלסטי לפתיחת מכשירים כדי להפריד את הפאנל התחתון מהדבק סביב צידו השמאלי, הימני והעליון.\n⚠️ אל תפרקו לאורך הקצה התחתון – קיימים שם תפסים שמחזיקים את המכסה.\nלאחר חיתוך רוב הדבק, הפאנל התחתון יוסר בקלות.`, image: "https://guide-images.cdn.ifixit.com/igi/KA2CBSt1Pf1CfAfO.standard" }
-      ]
+      xbox: {
+        title: 'תיקון Drift בג׳ויסטיק – Xbox 360',
+        steps: [
+          {
+            text: 'פתח את 7 הברגים מאחור באמצעות מברג T8.',
+            image: 'https://guide-images.cdn.ifixit.com/igi/4987RpB7Xwjf2C1s.standard'
+          },
+          {
+            text: 'הסר בעדינות את הכיסוי האחורי. שים לב לחוטים המחוברים בפנים.',
+            image: 'https://guide-images.cdn.ifixit.com/igi/Dg4Tys24YwVg1cUD.standard'
+          },
+          {
+            text: 'נקה בעדינות את בסיס הג\'ויסטיק עם מקלון צמר גפן טבול באלכוהול איזופרופיל. אל תציף בנוזל.',
+            image: 'https://guide-images.cdn.ifixit.com/igi/7J9mTLLrhrHyZaXy.standard'
+          },
+          {
+            text: 'ייבש את הסטיקים בעזרת מייבש שיער כדי לוודא שאין לחות.',
+            image: 'https://guide-images.cdn.ifixit.com/igi/wCGDxS7O7oR9yXwT.standard'
+          },
+          {
+            text: 'הרכב מחדש את השלט – החזר את הכיסוי וחזק את הברגים בסדר הפוך.',
+            image: 'https://guide-images.cdn.ifixit.com/igi/BWnyhYze21rXJt4S.standard'
+          }
+        ]
+      },
+      trackpad: {
+        title: 'Magic Trackpad Teardown',
+        steps: [
+          {
+            text: 'ה־Magic Trackpad הוא הטרקפד הראשון לשולחן עבודה שתומך במחוות שונות כמו קליק, גלילה, החלקה וסיבוב. נדרשים מחשב מק עם Bluetooth, מערכת macOS 10.6.4 ומעלה וסוללות (מודל A1339)【203675002485665†L30-L45】.',
+            image: 'https://guide-images.cdn.ifixit.com/igi/OKmGSYS4qHZ1h1NL.standard'
+          },
+          {
+            text: 'המשטח גדול בכ־80% מזה של MacBook Pro ומגיע עם עיצוב אלומיניום תואם למקלדת האלחוטית. משטח הזכוכית הדק (0.5 מ\'מ) עמיד לשחיקה【203675002485665†L86-L98】.',
+            image: 'https://guide-images.cdn.ifixit.com/igi/YImFsxtyZH5jNLCo.standard'
+          },
+          {
+            text: 'כדי להוציא את הסוללות, סובב את מכסה הסוללה ושחרר את שתי סוללות ה‑AA. הברגות המרובעות יעילות אך קשות לייצור – כל הכבוד לאפל על תשומת הלב לפרטים【203675002485665†L138-L154】.',
+            image: 'https://guide-images.cdn.ifixit.com/igi/haRDIhncK3oj51ac.standard'
+          },
+          {
+            text: 'התחל בפירוק: השתמש בכלי פלסטיק כדי להפריד את הפנל התחתון מהדבק לאורך הקצוות השמאלי, הימני והעליון. אל תפרק בצד התחתון בגלל תפסנים; לאחר חיתוך הדבק הפנל יוצא【203675002485665†L289-L301】.',
+            image: 'https://guide-images.cdn.ifixit.com/igi/KA2CBSt1Pf1CfAfO.standard'
+          },
+          {
+            text: 'בעזרת פריטה עדינה הסר את המרווח הפנימי. המרווח מונע מצב שבו הפנל התחתון לוחץ על לוח האם ועלול להזיק לו【203675002485665†L456-L466】.',
+            image: 'https://guide-images.cdn.ifixit.com/igi/veMQepRFOnIWLSUs.standard'
+          },
+          {
+            text: 'נתק את שני כבלי הסרט המחברים את משטח המגע הקיבולי ללוח האם. הכבלים דקים מאוד ומודבקים לתחתית המשטח, לכן עבד בזהירות【203675002485665†L504-L512】.',
+            image: 'https://guide-images.cdn.ifixit.com/igi/cam2WEnbm1JI6xuC.standard'
+          },
+          {
+            text: 'המכשיר דק ויפה אך אינו ניתן לתיקון בקלות. חמם את הדבק עם אקדח חום ואז פרק בזהירות את משטח המגע מהשלדה בעזרת מפרידי פלסטיק – זה דורש חום וכלים מתאימים【203675002485665†L550-L564】.',
+            image: 'https://guide-images.cdn.ifixit.com/igi/j2kyrAOMZgdZmQl2.standard'
+          },
+          {
+            text: 'לאחר שחרור הדבק ניתן להסיר את משטח המגע. מנגנון הלחיצה הייחודי: שתי רגליות גומי דוחפות פלטה ומברגת שלדה כדי ללחוץ על מתג העכבר ולייצר קליק【203675002485665†L619-L633】.',
+            image: 'https://guide-images.cdn.ifixit.com/igi/djlUAxiPD6KnpJtO.standard'
+          },
+          {
+            text: 'כדי להסיר את לוח האם, עליך להפריד ארבעה חוטים מולחמים שמחוברים למחבר הסוללה/נורת הסטטוס. לאחר מכן הסר שני ברגי פיליפס והפרד את הלוח מהשלדה【203675002485665†L679-L686】.',
+            image: 'https://guide-images.cdn.ifixit.com/igi/IoNZGkITXVX2F3aM.standard'
+          },
+          {
+            text: 'בלב לוח האם שבב Broadcom BCM2042 המספק קישוריות Bluetooth (אותו שבב שקיים ב‑Magic Mouse). נמצא גם בקר מגע BCM5974 למולטיטאץ\', זיכרון פלאש SST 25WF020 של 2 Mbit ורכיב TI CD3238 שמעבד קווי RS‑232. צדו האחורי של הלוח מכוסה בדבק【203675002485665†L863-L894】.',
+            image: 'https://guide-images.cdn.ifixit.com/igi/KRCORLvIsTe2Z41q.standard'
+          },
+          {
+            text: 'סוף – ה‑Magic Trackpad מפורק לתשעה חלקים. למידע נוסף ולמדריכים אחרים, בקרו בדף ה‑Teardown של iFixit【203675002485665†L964-L972】.',
+            image: 'https://guide-images.cdn.ifixit.com/igi/AFh4Ww4viDQHH1Ow.standard'
+          }
+        ]
+      }
     };
 
     let currentGuide = null;
-    let currentStepIndex = 0;
+    let currentStep = 0;
+    // Populate the guide cards on the home page
+    const guideListEl = document.getElementById('guide-list');
+    function renderGuideCards() {
+      guideListEl.innerHTML = '';
+      Object.keys(guides).forEach(id => {
+        const guide = guides[id];
+        const card = document.createElement('div');
+        card.className = 'guide-card';
+        card.setAttribute('data-id', id);
+        card.setAttribute('data-title', guide.title.toLowerCase());
+        card.innerHTML = `<h3>${guide.title}</h3><p>${guide.steps.length} שלבים</p>`;
+        card.addEventListener('click', () => {
+          showGuide(id);
+        });
+        guideListEl.appendChild(card);
+      });
+    }
 
-    const menuView = document.getElementById('menu-view');
-    const guideView = document.getElementById('guide-view');
-    const stepCounterEl = document.getElementById('step-counter');
-    const stepImageEl = document.getElementById('step-image');
-    const stepTextEl = document.getElementById('step-text');
-    const prevBtn = document.getElementById('prev-btn');
-    const nextBtn = document.getElementById('next-btn');
+    // Search filter
+    const searchInput = document.getElementById('search-input');
+    searchInput.addEventListener('input', () => {
+      const query = searchInput.value.toLowerCase();
+      document.querySelectorAll('.guide-card').forEach(card => {
+        const title = card.getAttribute('data-title');
+        if (title.includes(query)) {
+          card.style.display = 'block';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    });
 
-    function selectGuide(name) {
-      currentGuide = name;
-      currentStepIndex = 0;
-      menuView.style.display = 'none';
-      guideView.style.display = 'block';
+    // Show selected guide
+    function showGuide(id) {
+      currentGuide = id;
+      currentStep = 0;
+      document.getElementById('home-section').style.display = 'none';
+      document.getElementById('guide-section').style.display = 'block';
+      document.getElementById('guide-title').innerText = guides[id].title;
       renderStep();
     }
 
-    function backToMenu() {
-      guideView.style.display = 'none';
-      menuView.style.display = 'flex';
-      currentGuide = null;
-    }
-
+    // Render current step
     function renderStep() {
-      const steps = guides[currentGuide];
-      const step = steps[currentStepIndex];
-      stepCounterEl.textContent = `${currentStepIndex + 1} / ${steps.length}`;
-      stepImageEl.src = step.image;
-      stepTextEl.textContent = step.text;
-      prevBtn.disabled = currentStepIndex === 0;
-      nextBtn.disabled = currentStepIndex === steps.length - 1;
+      const guide = guides[currentGuide];
+      const step = guide.steps[currentStep];
+      document.getElementById('step-counter').innerText = `${currentStep + 1}/${guide.steps.length}`;
+      document.getElementById('step-text').innerHTML = step.text;
+      // Update image
+      const imgEl = document.getElementById('step-image');
+      imgEl.src = step.image;
+      imgEl.style.display = step.image ? 'block' : 'none';
+      // Update navigation buttons
+      document.getElementById('prev-btn').disabled = currentStep === 0;
+      document.getElementById('next-btn').disabled = currentStep === guide.steps.length - 1;
       speak(step.text);
     }
 
-    function prevStep() {
-      if (currentStepIndex > 0) {
-        currentStepIndex--;
+    // Navigation actions
+    document.getElementById('prev-btn').addEventListener('click', () => {
+      if (currentStep > 0) {
+        currentStep--;
         renderStep();
       }
-    }
-
-    function nextStep() {
-      const steps = guides[currentGuide];
-      if (currentStepIndex < steps.length - 1) {
-        currentStepIndex++;
+    });
+    document.getElementById('next-btn').addEventListener('click', () => {
+      const guide = guides[currentGuide];
+      if (currentStep < guide.steps.length - 1) {
+        currentStep++;
         renderStep();
       }
-    }
+    });
+    document.getElementById('back-button').addEventListener('click', () => {
+      // Stop any ongoing speech
+      speechSynthesis.cancel();
+      document.getElementById('guide-section').style.display = 'none';
+      document.getElementById('home-section').style.display = 'block';
+    });
 
-    // פונקציה להקראת הטקסט
+    // Speech synthesis function
     function speak(text) {
-      if (!('speechSynthesis' in window)) return; // אין תמיכה
-      // ביטול הקראה קודמת אם עדיין רצה
-      window.speechSynthesis.cancel();
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = 'he-IL';
-      // ב-iOS יש צורך באינטראקציה - ההקראה תיעשה לאחר לחיצה על כפתור או בחירה במדריך
-      window.speechSynthesis.speak(utterance);
+      // Cancel any previous utterances
+      speechSynthesis.cancel();
+      const utter = new SpeechSynthesisUtterance(text.replace(/<[^>]*>/g, ''));
+      utter.lang = 'he-IL';
+      speechSynthesis.speak(utter);
     }
+
+    // Initialize on load
+    renderGuideCards();
   </script>
 </body>
 </html>
