@@ -3,129 +3,74 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Repair Assistant with Images</title>
+  <title>חיפוש באתר iFixit</title>
   <style>
     body {
       font-family: Arial, sans-serif;
       background: #111;
-      color: #f2f2f2;
-      text-align: center;
+      color: #fff;
       margin: 0;
-      padding: 20px;
+      padding: 30px;
+      text-align: center;
     }
-    .card {
-      background: #1e1e1e;
-      padding: 20px;
-      border-radius: 15px;
-      margin: 0 auto;
+    h1 {
+      margin-bottom: 30px;
+    }
+    .search-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
       max-width: 600px;
+      margin: 0 auto;
     }
-    #image-container {
-      margin-bottom: 15px;
-    }
-    #step-image {
-      max-width: 100%;
-      border-radius: 10px;
-      display: none;
+    input[type="text"] {
+      flex: 1;
+      padding: 10px;
+      border-radius: 5px;
+      border: none;
+      font-size: 16px;
     }
     button {
-      margin-top: 20px;
-      padding: 12px 20px;
-      font-size: 18px;
+      padding: 10px 20px;
+      font-size: 16px;
       border: none;
-      border-radius: 10px;
+      border-radius: 5px;
       background: #4CAF50;
       color: white;
       cursor: pointer;
     }
-    button:disabled {
-      background: #555;
-      cursor: default;
+    p {
+      max-width: 600px;
+      margin: 20px auto;
+      line-height: 1.4;
+      color: #bbb;
     }
   </style>
 </head>
 <body>
-  <h1>🔧 עוזר תיקון עם תמונות</h1>
-  <div class="card">
-    <div id="image-container">
-      <img id="step-image" src="" alt="" />
-    </div>
-    <h3 id="step-counter"></h3>
-    <p id="step-text"></p>
-    <button id="next-btn" onclick="nextStep()">הבא</button>
+  <h1>🔍 חפש מדריכים באתר iFixit</h1>
+  <p>
+    הכנס את שם המוצר או המדריך שברצונך למצוא ולחץ על כפתור "חפש".
+    הכפתור יפתח עבורך את דף התוצאות הרשמיות של iFixit בלשונית חדשה.
+    מכיוון שאתר iFixit אינו מאפשר להריץ את מנוע החיפוש שלו מתוך דף חיצוני ללא שרת ביניים,
+    הדרך הפשוטה ביותר היא לפתוח את תוצאות החיפוש ישירות באתר שלהם.
+  </p>
+  <div class="search-container">
+    <input type="text" id="searchQuery" placeholder="לדוגמה: iPhone 12 battery" />
+    <button onclick="searchIfixit()">חפש</button>
   </div>
-
   <script>
-    // Steps with text and image URLs taken from the iFixit API guide 154929
-    const steps = [
-      {
-        text: "פתח את 7 הברגים מאחור באמצעות מברג Torx T8",
-        images: [
-          "https://guide-images.cdn.ifixit.com/igi/iEFeA4HCuZSCRKOs.standard"
-        ]
-      },
-      {
-        text: "הסר את הכיסוי האחורי בזהירות (יש חוטים בפנים שיכולים להתנתק).",
-        images: [
-          "https://guide-images.cdn.ifixit.com/igi/U2GVouFUYRkVnmKR.standard"
-        ]
-      },
-      {
-        text: "נקה בעדינות את בסיס הג׳ויסטיק באמצעות מקלון צמר גפן עם אלכוהול איזופרופיל או רפואי; אל תשים יותר מדי נוזל כדי לא להזיק לשלט.",
-        images: [
-          "https://guide-images.cdn.ifixit.com/igi/JFFAbNkKa3NRrGxH.standard"
-        ]
-      },
-      {
-        text: "ייבש את שני הסטיקים באמצעות מייבש שיער.",
-        images: [
-          "https://guide-images.cdn.ifixit.com/igi/Q262sXwmYGZ1EG3w.standard"
-        ]
-      },
-      {
-        text: "הרכב מחדש את השלט על‑ידי החזרת הכיסוי והברגים בסדר הפוך.",
-        images: []
+    function searchIfixit() {
+      const query = document.getElementById('searchQuery').value.trim();
+      if (!query) {
+        alert('נא להזין מונח חיפוש.');
+        return;
       }
-    ];
-
-    let current = 0;
-
-    function render() {
-      const step = steps[current];
-      document.getElementById('step-counter').innerText = `${current + 1} / ${steps.length}`;
-      document.getElementById('step-text').innerText = step.text;
-      const imgEl = document.getElementById('step-image');
-      if (step.images && step.images.length > 0) {
-        imgEl.src = step.images[0];
-        imgEl.style.display = 'block';
-      } else {
-        imgEl.style.display = 'none';
-      }
-      // Enable or disable button on last step
-      const btn = document.getElementById('next-btn');
-      btn.disabled = current >= steps.length - 1;
-      // Speak step (requires user interaction on iOS to work)
-      speak(step.text);
+      // פותח את תוצאות החיפוש באתר iFixit בלשונית חדשה
+      const url = 'https://www.ifixit.com/search?query=' + encodeURIComponent(query);
+      window.open(url, '_blank');
     }
-
-    function nextStep() {
-      if (current < steps.length - 1) {
-        current++;
-        render();
-      }
-    }
-
-    function speak(text) {
-      if ('speechSynthesis' in window) {
-        const msg = new SpeechSynthesisUtterance(text);
-        msg.lang = 'he-IL';
-        window.speechSynthesis.cancel();
-        window.speechSynthesis.speak(msg);
-      }
-    }
-
-    // Initialize
-    render();
   </script>
 </body>
 </html>
